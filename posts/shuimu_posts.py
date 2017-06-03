@@ -35,18 +35,15 @@ def login(driver, home_page_url):
 
 
 def top_post(driver):
-    # post_url_count = len(open(file_shuimu_post_urls, "rU").readlines()) + 1
-    # post_url = linecache.getline(file_shuimu_post_urls, random.randint(1, post_url_count))
-    time.sleep(2)
-    posts = ['http://www.newsmth.net/nForum/#!article/Career_Upgrade/post/525879',
-             'http://www.newsmth.net/nForum/#!article/Career_Upgrade/post/526486']
-    driver.get(posts[random.randint(0, 1)])
+    post_url_count = len(open(file_shuimu_urls, "rU").readlines()) + 1
+    post_url = linecache.getline(file_shuimu_urls, random.randint(1, post_url_count))
+    driver.get(post_url)
     try:
         post_content_element = WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.ID, "post_content")))
         post_content_element.click()
-        time.sleep(1)
+        time.sleep(2)
         post_content_element.clear()
-        post_content_element.send_keys('up me')
+        post_content_element.send_keys('up me, up me')
     except TimeoutException:
         print 'TimeoutException occur when post_content'
 
@@ -54,7 +51,7 @@ def top_post(driver):
         publish_element = WebDriverWait(driver, 30).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, "#post_form > div > input:nth-child(1)")))
         publish_element.click()
-        time.sleep(1)
+        time.sleep(3)
     except TimeoutException:
         print 'TimeoutException occur when top_post child'
 
@@ -70,13 +67,12 @@ def check_post_position(driver):
         print len(tr_elements)
         if tr_elements is None or len(tr_elements) < 2:
             print 'tr_elements is None!!!'
-        for tr_ele in tr_elements[0:11]:
+        for tr_ele in tr_elements[0:15]:
             if 'lxzcyh' in tr_ele.text:
                 target_post_cnt += 1
     except TimeoutException:
         print 'TimeoutException occur when wait post_table_element'
-    # print 'target_post_cnt:' + str(target_post_cnt)
-    if target_post_cnt == 0:
+    if target_post_cnt < 4:
         return True
     else:
         return False
@@ -84,10 +80,10 @@ def check_post_position(driver):
 
 if __name__ == '__main__':
     conf = ConfigParser.ConfigParser()
-    conf.read('/Users/iamabadcoder/PycharmProjects/SpiderX/posts_tool/account.conf')
-    file_shuimu_post_urls = '/Users/iamabadcoder/PycharmProjects/SpiderX/posts_tool/shuimu_urls.txt'
+    conf.read('/Users/iamabadcoder/PycharmProjects/hack-spider/resources/account.conf')
+    file_shuimu_urls = '/Users/iamabadcoder/PycharmProjects/hack-spider/resources/shuimu_urls.txt'
 
-    chrome_driver = webdriver.Chrome('/Users/iamabadcoder/PycharmProjects/SpiderX/drivers/chromedriver')
+    chrome_driver = webdriver.Chrome('/Users/iamabadcoder/PycharmProjects/hack-spider/resources/chromedriver')
     chrome_driver.maximize_window()
     if not login(chrome_driver, 'http://www.newsmth.net/nForum/index'):
         print 'Login Error!!!'
@@ -95,4 +91,4 @@ if __name__ == '__main__':
         while True:
             if check_post_position(chrome_driver):
                 top_post(chrome_driver)
-            time.sleep(10)
+            time.sleep(60)
