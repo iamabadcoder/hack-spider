@@ -25,9 +25,9 @@ def login(driver, home_page_url):
         print 'TimeoutException occur when WebDriverWait in login'
         return False
     time.sleep(5)
-    id_element.send_keys(conf.get("shuimu", "name"))
+    id_element.send_keys(conf.get("beiyouren", "name"))
     time.sleep(1)
-    passwd_element.send_keys(conf.get("shuimu", "pwd"))
+    passwd_element.send_keys(conf.get("beiyouren", "pwd"))
     time.sleep(1)
     submit_element.click()
     time.sleep(5)
@@ -58,7 +58,7 @@ def top_post(driver):
 def check_post_position(driver):
     target_post_cnt = 0
     top_three_cnt = 0
-    post_list_page_url = 'http://www.newsmth.net/nForum/#!board/Career_Upgrade'
+    post_list_page_url = 'https://bbs.byr.cn/#!board/Jump'
     driver.get(post_list_page_url)
     try:
         post_table_element = WebDriverWait(driver, 30).until(
@@ -67,15 +67,15 @@ def check_post_position(driver):
         print len(tr_elements)
         if tr_elements is None or len(tr_elements) < 2:
             print 'tr_elements is None!!!'
-        for tr_ele in tr_elements[0:15]:
+        for tr_ele in tr_elements[0:19]:
             if 'lxzcyh' in tr_ele.text:
                 target_post_cnt += 1
-        for tr_ele in tr_elements[0:7]:
+        for tr_ele in tr_elements[0:12]:
             if 'lxzcyh' in tr_ele.text:
                 top_three_cnt += 1
     except TimeoutException:
         print 'TimeoutException occur when wait post_table_element'
-    if target_post_cnt > 4 and top_three_cnt > 0:
+    if target_post_cnt > 3 and top_three_cnt > 0:
         return False
     else:
         return True
@@ -84,11 +84,11 @@ def check_post_position(driver):
 if __name__ == '__main__':
     conf = ConfigParser.ConfigParser()
     conf.read('/Users/iamabadcoder/PycharmProjects/hack-spider/resources/account.conf')
-    file_shuimu_urls = '/Users/iamabadcoder/PycharmProjects/hack-spider/resources/shuimu_urls.txt'
+    file_shuimu_urls = '/Users/iamabadcoder/PycharmProjects/hack-spider/resources/beiyouren_urls.txt'
 
     chrome_driver = webdriver.Chrome('/Users/iamabadcoder/PycharmProjects/hack-spider/resources/chromedriver')
     chrome_driver.maximize_window()
-    if not login(chrome_driver, 'http://www.newsmth.net/nForum/index'):
+    if not login(chrome_driver, 'https://bbs.byr.cn/index'):
         print 'Login Error!!!'
     else:
         while True:
