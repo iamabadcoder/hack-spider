@@ -33,9 +33,8 @@ def login(driver, home_page_url):
     time.sleep(5)
     return True
 
-
 def top_post(driver):
-    post_url_count = len(open(file_shuimu_urls, "rU").readlines()) + 1
+    post_url_count = len(open(file_shuimu_urls, "rU").readlines())
     post_url = linecache.getline(file_shuimu_urls, random.randint(1, post_url_count))
     driver.get(post_url)
     try:
@@ -58,6 +57,7 @@ def top_post(driver):
 
 def check_post_position(driver):
     target_post_cnt = 0
+    top_three_cnt = 0
     post_list_page_url = 'http://www.newsmth.net/nForum/#!board/Career_Upgrade'
     driver.get(post_list_page_url)
     try:
@@ -70,12 +70,15 @@ def check_post_position(driver):
         for tr_ele in tr_elements[0:15]:
             if 'lxzcyh' in tr_ele.text:
                 target_post_cnt += 1
+        for tr_ele in tr_elements[0:7]:
+            if 'lxzcyh' in tr_ele.text:
+                top_three_cnt += 1
     except TimeoutException:
         print 'TimeoutException occur when wait post_table_element'
-    if target_post_cnt < 4:
-        return True
-    else:
+    if target_post_cnt > 4 and top_three_cnt > 0:
         return False
+    else:
+        return True
 
 
 if __name__ == '__main__':
